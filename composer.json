@@ -1,0 +1,23 @@
+{
+    "name": "tekill/env-diff",
+    "description": "Check the difference between env files and actualize each other",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Lexey Felde",
+            "email": "felde.lexey@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.4"
+    },
+    "require-dev": {
+        "composer/composer": "1.0.*@dev",
+        "phpunit/phpunit": "~6.0"
+    },
+    "autoload": {
+        "psr-4": { "LF\\EnvDiff\\": "src/" }
+    },
+    "minimum-stability": "dev"
+}

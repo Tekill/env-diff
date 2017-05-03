@@ -1,0 +1,4 @@
+# This file is auto-generated during the composer install
+BOOLEAN=true
+FOO='bar'
+NUMBER=123

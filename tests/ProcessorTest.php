@@ -162,14 +162,13 @@ class ProcessorTest extends TestCase
         $invalidDirectory = 'fixtures/actualize/invalid/';
         $tests            = [];
 
-        chdir(__DIR__);
-        foreach (scandir($invalidDirectory) as $folder) {
+        foreach (scandir(__DIR__ . '/' .  $invalidDirectory) as $folder) {
             if ($folder === '.' || $folder === '..') {
                 continue;
             }
             $tests[basename($folder)] = [
                 new Config($invalidDirectory . $folder . '/.env.dist'),
-                file_get_contents($invalidDirectory . $folder . '/error.txt')
+                file_get_contents(__DIR__ . '/' . $invalidDirectory . $folder . '/error.txt')
             ];
         }
 
@@ -244,14 +243,13 @@ class ProcessorTest extends TestCase
         $invalidDirectory = 'fixtures/difference/invalid/';
         $tests            = [];
 
-        chdir(__DIR__);
-        foreach (scandir($invalidDirectory) as $folder) {
+        foreach (scandir(__DIR__ . '/' . $invalidDirectory) as $folder) {
             if ($folder === '.' || $folder === '..') {
                 continue;
             }
             $tests[basename($folder)] = [
                 new Config($invalidDirectory . $folder . '/.env.dist', $invalidDirectory . $folder . '/.env'),
-                file_get_contents($invalidDirectory . $folder . '/error.txt')
+                file_get_contents(__DIR__ . '/' . $invalidDirectory . $folder . '/error.txt')
             ];
         }
 

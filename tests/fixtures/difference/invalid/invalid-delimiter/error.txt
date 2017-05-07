@@ -1,0 +1,1 @@
+<error>Parse error at 1 line: `FOO:'bar'` is not valid env value</error>

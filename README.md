@@ -26,4 +26,3 @@ composer Scripts composer event
 [link-travis]: https://travis-ci.org/Tekill/env-diff
 [link-scrutinizer]: https://scrutinizer-ci.com/g/Tekill/env-diff/code-structure/
 [link-code-quality]: https://scrutinizer-ci.com/g/Tekill/env-diff
-[link-author]: https://github.com/Tekill

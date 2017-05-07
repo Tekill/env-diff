@@ -18,11 +18,20 @@ checks:
         fix_identation_4spaces: true
         fix_doc_comments: true
 
-build:
-    tests:
-        override:
-            -
-                command: 'vendor/bin/phpunit --coverage-clover=some-file'
-                coverage:
-                    file: 'some-file'
-                    format: 'clover'
+tools:
+    external_code_coverage:
+        timeout: 600
+        runs: 3
+    php_analyzer: true
+    php_code_coverage: false
+    php_code_sniffer:
+        config:
+            standard: PSR2
+        filter:
+            paths: ['src']
+    php_loc:
+        enabled: true
+        excluded_dirs: [vendor, tests]
+    php_cpd:
+        enabled: true
+        excluded_dirs: [vendor, tests]

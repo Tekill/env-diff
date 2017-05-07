@@ -1,0 +1,5 @@
+Diff between .env and .env.dist files:
+
+<fg=red>- MISSED=true</>
+<fg=green>+ EXTRA=true</>
+<fg=cyan>@ APPEND='new' ('new line')</>

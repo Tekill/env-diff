@@ -2,10 +2,8 @@
 
 namespace LF\EnvDiff;
 
-use Composer\IO\IOInterface;
 use InvalidArgumentException;
-use LF\EnvDiff\Env\Dumper;
-use LF\EnvDiff\Env\Parser;
+use LF\EnvDiff\IO\IOInterface;
 use RuntimeException;
 
 class Processor
@@ -28,16 +26,25 @@ class Processor
      *
      * @throws InvalidArgumentException
      * @throws RuntimeException
+     *
+     * @return bool
      */
     public function actualizeEnv(Config $config)
     {
         $dist   = $config->getDist();
         $target = $config->getTarget();
+        $exists = is_file($target);
 
-        $distEnv   = Parser::parse($dist);
-        $actualEnv = is_file($target) ? Parser::parse($target) : [];
+        $this->io->write(sprintf('Actualize env from %s', $dist));
 
-        $this->io->write(sprintf('<info>%s the "%s" file</info>', is_file($target) ? 'Check' : 'Creating', $target));
+        try {
+            $distEnv   = Env::parse($dist);
+            $actualEnv = $exists ? Env::parse($target) : [];
+        } catch (InvalidArgumentException $exception) {
+            $this->io->write(sprintf('<error>%s, abort</error>', $exception->getMessage()));
+
+            return true;
+        }
 
         $actualEnv = $this->processEnv($distEnv, $actualEnv, $config->isKeepOutdatedEnv());
 
@@ -48,38 +55,59 @@ class Processor
         ksort($actualEnv);
         file_put_contents(
             $target,
-            '# This file is auto-generated during the composer install' . PHP_EOL . Dumper::dump($actualEnv)
+            '# This file is auto-generated during the composer install' . PHP_EOL . Env::dump($actualEnv)
         );
+
+        $this->io->write(sprintf('<info>%s has been %s</info>', $target, $exists ? 'updated' : 'created'));
+
+        return false;
     }
 
     /**
      * @param Config $config
      *
      * @throws InvalidArgumentException
+     *
+     * @return bool
      */
     public function showDifference(Config $config)
     {
         $dist   = $config->getDist();
         $target = $config->getTarget();
 
-        $distEnv   = Parser::parse($dist);
-        $actualEnv = is_file($target) ? Parser::parse($target) : [];
+        try {
+            $distEnv   = Env::parse($dist);
+            $actualEnv = Env::parse($target);
+        } catch (InvalidArgumentException $exception) {
+            $this->io->write(sprintf('<error>%s</error>', $exception->getMessage()));
 
-        $extraEnv   = array_diff_assoc($actualEnv, $distEnv);
-        $missingEnv = array_diff_assoc($distEnv, $actualEnv);
-
-        if (count($missingEnv)) {
-            $this->io->write(
-                sprintf('<warning>Your %s and %s files are not in sync.</warning>', $target, $dist)
-            );
+            return true;
         }
 
-        foreach ($extraEnv as $env => $value) {
-            $this->io->write(sprintf('<info>- %s=%s</info>', $env, $value));
+        $extraEnv   = array_diff_key($actualEnv, $distEnv);
+        $missingEnv = array_diff_key($distEnv, $actualEnv);
+        $changedEnv = array_diff(array_intersect_key($distEnv, $actualEnv), $actualEnv);
+
+        if (!count($missingEnv) && !count($extraEnv) && !count($changedEnv)) {
+            $this->io->write(sprintf('<info>%s and %s is identical</info>', $target, $dist));
+
+            return false;
         }
+
+        $this->io->write(sprintf('Diff between %s and %s files:', $target, $dist));
+        $this->io->write('');
+
         foreach ($missingEnv as $env => $value) {
-            $this->io->write(sprintf('<warning>+ %s=%s</warning>', $env, $value));
+            $this->io->write(sprintf('<fg=red>- %s=%s</>', $env, $value));
         }
+        foreach ($extraEnv as $env => $value) {
+            $this->io->write(sprintf('<fg=green>+ %s=%s</>', $env, $value));
+        }
+        foreach ($changedEnv as $env => $default) {
+            $this->io->write(sprintf('<fg=cyan>@ %s=%s (%s)</>', $env, $actualEnv[$env], $default));
+        }
+
+        return false;
     }
 
     /**

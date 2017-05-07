@@ -4,6 +4,9 @@ namespace LF\EnvDiff;
 
 class Config
 {
+    const DEFAULT_TARGET = '.env';
+    CONST DEFAULT_DIST   = '.env.dist';
+
     /** @var string */
     private $dist;
 
@@ -12,6 +15,20 @@ class Config
 
     /** @var bool */
     private $keepOutdatedEnv;
+
+    /**
+     * Config constructor.
+     *
+     * @param string $dist
+     * @param string $target
+     * @param bool   $keepOutdatedEnv
+     */
+    public function __construct($dist = self::DEFAULT_DIST, $target = self::DEFAULT_TARGET, $keepOutdatedEnv = true)
+    {
+        $this->dist            = $dist;
+        $this->target          = $target;
+        $this->keepOutdatedEnv = $keepOutdatedEnv;
+    }
 
     /**
      * @param array $config
@@ -26,16 +43,11 @@ class Config
         if (empty($config['dist'])) {
             $config['dist'] = $config['target'] . '.dist';
         }
-        if (empty($config['keep-outdated'])) {
+        if (!isset($config['keep-outdated'])) {
             $config['keep-outdated'] = true;
         }
 
-        $self                  = new static();
-        $self->target          = $config['target'];
-        $self->dist            = $config['dist'];
-        $self->keepOutdatedEnv = (bool) $config['keep-outdated'];
-
-        return $self;
+        return new static($config['dist'], $config['target'], (bool) $config['keep-outdated']);
     }
 
     /**

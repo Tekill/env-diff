@@ -2,8 +2,8 @@
 
 namespace LF\EnvHandler\Tests;
 
-use Composer\IO\IOInterface;
 use LF\EnvDiff\Config;
+use LF\EnvDiff\IO\IOInterface;
 use LF\EnvDiff\Processor;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
@@ -20,34 +20,8 @@ class ProcessorTest extends TestCase
     {
         parent::setUp();
 
-        $this->io        = $this->createMock('Composer\IO\IOInterface');
+        $this->io        = $this->createMock('LF\EnvDiff\IO\IOInterface');
         $this->processor = new Processor($this->io);
-    }
-
-    /**
-     * @return array
-     */
-    public function provideInvalidConfiguration()
-    {
-        return [
-            'no file' => [
-                Config::createFormArray(),
-                'The file ".env.dist" does not exist',
-            ],
-        ];
-    }
-
-    /**
-     * @dataProvider provideInvalidConfiguration
-     *
-     * @param Config $config
-     * @param string $exceptionMessage
-     */
-    public function testInvalidConfiguration(Config $config, $exceptionMessage)
-    {
-        $this->expectExceptionMessage($exceptionMessage);
-
-        $this->processor->actualizeEnv($config);
     }
 
     /**
@@ -55,16 +29,29 @@ class ProcessorTest extends TestCase
      */
     public function actualizeEnvDataProvider()
     {
-        $config = Config::createFormArray([
-            'dist'   => '.env.dist',
-            'target' => '.env'
-        ]);
+        $config = Config::createFormArray(
+            [
+                'dist'   => '.env.dist',
+                'target' => '.env'
+            ]
+        );
         $tests  = [];
 
-        foreach (glob(__DIR__ . '/fixtures/testcases/*/') as $folder) {
+        foreach (glob(__DIR__ . '/fixtures/actualize/valid/*/') as $folder) {
             $tests[basename($folder)]                  = [$folder, $config, false];
             $tests[basename($folder) . ' interactive'] = [$folder, $config, true];
         }
+
+        $subdirectory       = realpath(__DIR__ . '/fixtures/actualize/subdirectory/') . '/';
+        $configSubdirectory = Config::createFormArray(
+            [
+                'dist'   => 'sub/.env.dist',
+                'target' => 'expected/.env'
+            ]
+        );
+
+        $tests[$subdirectory]                  = [$subdirectory, $configSubdirectory, false];
+        $tests[$subdirectory . ' interactive'] = [$subdirectory, $configSubdirectory, false];
 
         return $tests;
     }
@@ -78,44 +65,214 @@ class ProcessorTest extends TestCase
      */
     public function testActualizeEnv($directory, Config $config, $isInteractive)
     {
-        $workingDir = sys_get_temp_dir() . '/lf_env_dot_handler/';
-        $exists     = $this->initializeTestCase($config, $directory, $workingDir);
-
-        $message = sprintf('<info>%s the "%s" file</info>', $exists ? 'Check' : 'Creating', $config->getTarget());
-        $this->io->expects(self::once())
-                 ->method('isInteractive')
-                 ->willReturn($isInteractive);
-        $this->io->expects(self::any())
-                 ->method('write')
-                 ->willReturn($message);
-        $this->io->expects(self::any())
-                 ->method('ask')
-                 ->willReturnArgument(1);
-
-        $this->processor->actualizeEnv($config);
-
-        self::assertFileEquals(
-            $directory . '/.expected',
-            $workingDir . '/' . $config->getTarget()
-        );
-    }
-
-    private function initializeTestCase(Config $config, $dataDir, $workingDir)
-    {
-        $fs = new Filesystem();
+        $workingDir = sys_get_temp_dir() . '/lf_env_diff_tests/';
+        $fs         = new Filesystem();
 
         if (is_dir($workingDir)) {
             $fs->remove($workingDir);
         }
 
-        $fs->copy($dataDir . $config->getDist(), $workingDir . $config->getDist());
+        $fs->copy($directory . $config->getDist(), $workingDir . $config->getDist());
 
-        if ($exists = file_exists($dataDir . '/' . $config->getTarget())) {
-            $fs->copy($dataDir . $config->getTarget(), $workingDir . $config->getTarget());
+        if ($exists = file_exists($directory . '/' . $config->getTarget())) {
+            $fs->copy($directory . $config->getTarget(), $workingDir . $config->getTarget());
         }
 
         chdir($workingDir);
+        $this->io->expects(self::once())
+                 ->method('isInteractive')
+                 ->willReturn($isInteractive);
+        $this->io->expects(self::any())
+                 ->method('write');
+        $this->io->expects(self::any())
+                 ->method('ask')
+                 ->willReturnArgument(1);
 
-        return $exists;
+        self::assertFalse(
+            $this->processor->actualizeEnv($config)
+        );
+        self::assertFileEquals(
+            $directory . '/.expected',
+            $workingDir . $config->getTarget()
+        );
+    }
+
+    /**
+     * @return array
+     */
+    public function actualizeEnvDataWithRemoveOutdatedProvider()
+    {
+        $tests = [];
+
+        $subdirectory       = realpath(__DIR__ . '/fixtures/actualize/delete-old-variable/') . '/';
+        $configSubdirectory = new Config('.env.dist', '.env', false);
+
+        $tests[$subdirectory]                  = [$subdirectory, $configSubdirectory, false];
+        $tests[$subdirectory . ' interactive'] = [$subdirectory, $configSubdirectory, false];
+
+        return $tests;
+    }
+
+    /**
+     * @dataProvider actualizeEnvDataWithRemoveOutdatedProvider()
+     *
+     * @param string $directory
+     * @param Config $config
+     * @param bool   $isInteractive
+     */
+    public function testActualizeEnvWithRemoveOutdated($directory, Config $config, $isInteractive)
+    {
+        $workingDir = sys_get_temp_dir() . '/lf_env_diff_tests/';
+        $fs         = new Filesystem();
+
+        if (is_dir($workingDir)) {
+            $fs->remove($workingDir);
+        }
+
+        $fs->copy($directory . $config->getDist(), $workingDir . $config->getDist());
+
+        if ($exists = file_exists($directory . '/' . $config->getTarget())) {
+            $fs->copy($directory . $config->getTarget(), $workingDir . $config->getTarget());
+        }
+
+        chdir($workingDir);
+        $this->io->expects(self::once())
+                 ->method('isInteractive')
+                 ->willReturn($isInteractive);
+        $this->io->expects(self::any())
+                 ->method('write');
+        $this->io->expects(self::any())
+                 ->method('ask')
+                 ->willReturnArgument(1);
+
+        self::assertFalse(
+            $this->processor->actualizeEnv($config)
+        );
+        self::assertFileEquals(
+            $directory . '/.expected',
+            $workingDir . $config->getTarget()
+        );
+    }
+
+    /**
+     * @return array
+     */
+    public function actualizeEnvParseFailedDataProvider()
+    {
+        $invalidDirectory = 'fixtures/actualize/invalid/';
+        $tests            = [];
+
+        chdir(__DIR__);
+        foreach (scandir($invalidDirectory) as $folder) {
+            if ($folder === '.' || $folder === '..') {
+                continue;
+            }
+            $tests[basename($folder)] = [
+                new Config($invalidDirectory . $folder . '/.env.dist'),
+                file_get_contents($invalidDirectory . $folder . '/error.txt')
+            ];
+        }
+
+        return $tests;
+    }
+
+    /**
+     * @dataProvider actualizeEnvParseFailedDataProvider()
+     *
+     * @param Config $config
+     * @param string $errorMessage
+     */
+    public function testActualizeEnvParseFailed(Config $config, $errorMessage)
+    {
+        $this->io->expects(self::at(1))
+                 ->method('write')
+                 ->with($errorMessage);
+
+        chdir(__DIR__);
+        self::assertTrue(
+            $this->processor->actualizeEnv($config)
+        );
+    }
+
+    /**
+     * @return array
+     */
+    public function showDifferenceDataProvider()
+    {
+        $tests = [];
+
+        foreach (glob(__DIR__ . '/fixtures/difference/valid/*/') as $folder) {
+            $tests[basename($folder)] = [$folder, file($folder . 'expected.log')];
+        }
+
+        return $tests;
+    }
+
+    /**
+     * @dataProvider showDifferenceDataProvider()
+     *
+     * @param string $directory
+     * @param array  $lines
+     */
+    public function testShowDifference($directory, array $lines)
+    {
+        $config = Config::createFormArray(
+            [
+                'dist'   => '.env.dist',
+                'target' => '.env'
+            ]
+        );
+
+        foreach ($lines as $id => $line) {
+            $this->io->expects(self::at($id))
+                     ->method('write')
+                     ->with(trim($line));
+        }
+
+        chdir($directory);
+
+        self::assertFalse(
+            $this->processor->showDifference($config)
+        );
+    }
+
+    /**
+     * @return array
+     */
+    public function showDifferenceParseFailedDataProvider()
+    {
+        $invalidDirectory = 'fixtures/difference/invalid/';
+        $tests            = [];
+
+        chdir(__DIR__);
+        foreach (scandir($invalidDirectory) as $folder) {
+            if ($folder === '.' || $folder === '..') {
+                continue;
+            }
+            $tests[basename($folder)] = [
+                new Config($invalidDirectory . $folder . '/.env.dist', $invalidDirectory . $folder . '/.env'),
+                file_get_contents($invalidDirectory . $folder . '/error.txt')
+            ];
+        }
+
+        return $tests;
+    }
+
+    /**
+     * @dataProvider showDifferenceParseFailedDataProvider()
+     *
+     * @param Config $config
+     * @param string $errorMessage
+     */
+    public function testShowDifferenceFailed(Config $config, $errorMessage)
+    {
+        $this->io->expects(self::once())
+                 ->method('write')
+                 ->with($errorMessage);
+
+        chdir(__DIR__);
+        self::assertTrue(
+            $this->processor->showDifference($config)
+        );
     }
 }

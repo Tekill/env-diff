@@ -5,6 +5,7 @@ namespace LF\EnvDiff\Composer;
 use Composer\Script\Event;
 use InvalidArgumentException;
 use LF\EnvDiff\Config;
+use LF\EnvDiff\IO\ComposerIO;
 use LF\EnvDiff\Processor;
 use RuntimeException;
 
@@ -19,7 +20,7 @@ class ScriptHandler
     public static function actualizeEnv(Event $event)
     {
         $configs   = self::extractConfigs($event);
-        $processor = new Processor($event->getIO());
+        $processor = new Processor(new ComposerIO($event->getIO()));
 
         foreach ($configs as $config) {
             $processor->actualizeEnv(Config::createFormArray($config));
@@ -35,7 +36,7 @@ class ScriptHandler
     public static function showDifference(Event $event)
     {
         $configs   = self::extractConfigs($event);
-        $processor = new Processor($event->getIO());
+        $processor = new Processor(new ComposerIO($event->getIO()));
 
         foreach ($configs as $config) {
             $processor->showDifference(Config::createFormArray($config));

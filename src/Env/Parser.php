@@ -13,30 +13,45 @@ class Parser
      *
      * @throws InvalidArgumentException
      */
-    public static function parse($path)
+    public function parse($path)
     {
         if (!is_file($path)) {
             throw new InvalidArgumentException(sprintf('The file "%s" does not exist', $path));
         }
 
-        $file = fopen($path, 'r');
+        $file = fopen($path, 'rb');
 
-        $env = [];
+        $number = 0;
+        $env    = [];
         while (false === feof($file)) {
             $line = trim(fgets($file));
-            // Ignore empty lines
+            $number++;
 
-            if (empty($line) === true || $line[0] === '#') {
+            if ($this->isCommentOrEmpty($line)) {
                 continue;
             }
             if (false === strpos($line, '=')) {
-                throw new InvalidArgumentException(sprintf('Line `%s` is not valid env variable', $line));
+                throw new InvalidArgumentException(
+                    sprintf('Parse error at %d line: `%s` is not valid env value', $number, $line)
+                );
             }
 
-            list($name, $value) = explode('=', $line);
+            list($name, $value) = explode('=', $line, 2);
             $env[trim($name)] = trim($value);
         }
 
+        fclose($file);
+
         return $env;
+    }
+
+    /**
+     * @param string $line
+     *
+     * @return bool
+     */
+    private function isCommentOrEmpty($line)
+    {
+        return (mb_strlen($line) === 0 || $line[0] === '#');
     }
 }

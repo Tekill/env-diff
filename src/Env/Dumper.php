@@ -9,7 +9,7 @@ class Dumper
      *
      * @return string
      */
-    public static function dump(array $envArray)
+    public function dump(array $envArray)
     {
         $dump = '';
 

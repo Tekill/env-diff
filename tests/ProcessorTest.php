@@ -1,6 +1,6 @@
 <?php
 
-namespace LF\EnvHandler\Tests;
+namespace LF\EnvDiff\Tests;
 
 use LF\EnvDiff\Config;
 use LF\EnvDiff\IO\IOInterface;
@@ -20,7 +20,7 @@ class ProcessorTest extends TestCase
     {
         parent::setUp();
 
-        $this->io        = $this->createMock('LF\EnvDiff\IO\IOInterface');
+        $this->io        = $this->createMock(IOInterface::class);
         $this->processor = new Processor($this->io);
     }
 

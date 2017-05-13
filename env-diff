@@ -1,6 +1,8 @@
 #!/usr/bin/env php
 <?php
 
+use LF\EnvDiff\Console\Application;
+
 $autoloadPaths = [
     __DIR__ . '/../../autoload.php',
     __DIR__ . '/../vendor/autoload.php',
@@ -9,21 +11,11 @@ $autoloadPaths = [
 
 foreach ($autoloadPaths as $path) {
     if (file_exists($path)) {
+
         require_once $path;
 
-        $config = [];
-
-        $processor = new LF\EnvDiff\Processor(
-            new \LF\EnvDiff\IO\ConsoleIO(
-                new \Symfony\Component\Console\Input\ArgvInput(),
-                new \Symfony\Component\Console\Output\ConsoleOutput()
-            )
-        );
-
-        $processor->actualizeEnv(LF\EnvDiff\Config::createFormArray($config));
-        $processor->showDifference(LF\EnvDiff\Config::createFormArray($config));
-
-        exit(0);
+        $application = new Application();
+        $application->run();
     }
 }
 

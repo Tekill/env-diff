@@ -1,6 +1,6 @@
 <?php
 
-namespace LF\EnvHandler\Tests;
+namespace LF\EnvDiff\Tests;
 
 use LF\EnvDiff\Config;
 use PHPUnit\Framework\TestCase;

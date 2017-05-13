@@ -1,8 +1,12 @@
 <?php
 
-namespace LF\EnvHandler\Tests\Composer;
+namespace LF\EnvDiff\Tests\Composer;
 
+use Composer\Composer;
+use Composer\IO\IOInterface;
+use Composer\Package\PackageInterface;
 use Composer\Script\Event;
+use InvalidArgumentException;
 use LF\EnvDiff\Composer\ScriptHandler;
 use PHPUnit\Framework\TestCase;
 use PHPUnit_Framework_MockObject_MockObject;
@@ -34,7 +38,7 @@ class ScriptHandlerTest extends TestCase
      */
     public function testActualizeEnvInvalidConfiguration(array $extras, $exceptionMessage)
     {
-        $this->expectException('InvalidArgumentException');
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage($exceptionMessage);
 
         $event = $this->createEvent($extras);
@@ -53,7 +57,7 @@ class ScriptHandlerTest extends TestCase
      */
     public function testShowDifferenceInvalidConfiguration(array $extras, $exceptionMessage)
     {
-        $this->expectException('InvalidArgumentException');
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage($exceptionMessage);
 
         $event = $this->createEvent($extras);
@@ -94,7 +98,7 @@ class ScriptHandlerTest extends TestCase
      */
     public function testActualizeEnvValidConfiguration(array $extras)
     {
-        $io = $this->createMock('Composer\IO\IOInterface');
+        $io = $this->createMock(IOInterface::class);
 
         $event = $this->createEvent($extras);
         $event
@@ -113,7 +117,7 @@ class ScriptHandlerTest extends TestCase
      */
     public function testShowDifferenceValidConfiguration(array $extras)
     {
-        $io = $this->createMock('Composer\IO\IOInterface');
+        $io = $this->createMock(IOInterface::class);
 
         $event = $this->createEvent($extras);
         $event
@@ -132,17 +136,17 @@ class ScriptHandlerTest extends TestCase
      */
     private function createEvent(array $extras = [])
     {
-        $package = $this->createMock('Composer\Package\PackageInterface');
+        $package = $this->createMock(PackageInterface::class);
         $package->expects(self::once())
                 ->method('getExtra')
                 ->willReturn($extras);
 
-        $composer = $this->createMock('Composer\Composer');
+        $composer = $this->createMock(Composer::class);
         $composer->expects(self::once())
                  ->method('getPackage')
                  ->willReturn($package);
 
-        $event = $this->createMock('Composer\Script\Event');
+        $event = $this->createMock(Event::class);
         $event->expects(self::once())
               ->method('getComposer')
               ->willReturn($composer);

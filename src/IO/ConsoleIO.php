@@ -47,7 +47,7 @@ class ConsoleIO implements IOInterface
      */
     public function isInteractive()
     {
-        $this->input->isInteractive();
+        return $this->input->isInteractive();
     }
 
     /**

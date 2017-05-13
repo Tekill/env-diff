@@ -35,7 +35,7 @@ class Processor
         $target = $config->getTarget();
         $exists = is_file($target);
 
-        $this->io->write(sprintf('Actualize env from %s', $dist));
+        $this->io->write(sprintf('<fg=green>Actualize env from "%s"</>', $dist));
 
         try {
             $distEnv   = Env::parse($dist);
@@ -89,7 +89,7 @@ class Processor
         $changedEnv = array_diff(array_intersect_key($distEnv, $actualEnv), $actualEnv);
 
         if (!count($missingEnv) && !count($extraEnv) && !count($changedEnv)) {
-            $this->io->write(sprintf('<info>%s and %s is identical</info>', $target, $dist));
+            $this->io->write(sprintf('<info>"%s" and "%s" is identical</info>', $target, $dist));
 
             return false;
         }

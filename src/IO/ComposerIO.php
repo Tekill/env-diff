@@ -40,9 +40,11 @@ class ComposerIO implements IOInterface
 
     /**
      * {@inheritdoc}
+     *
+     * @throws \RuntimeException
      */
     public function ask($question, $default = null)
     {
-        return $this->ask($question, $default);
+        return $this->io->ask($question, $default);
     }
 }

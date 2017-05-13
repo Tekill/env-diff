@@ -16,31 +16,31 @@ composer install tekill/env-diff
 
 ## Manual running
 ### Actualize variables
-Compare `.env` with `.env.dist` and add missing variables to `.env` file
+Compare `.env` with `.env.dist` and add missing variables to `.env` file.
 ```
 php ./vendor/bin/env-diff actualize
 ```
 
-Compare `.env` with `.env.example` and add missing variables to `.env` file
+Compare `.env` with `.env.example` and add missing variables to `.env` file.
 ```
 php ./vendor/bin/env-diff actualize .env.example
 ```
 
-Compare `.env-target` with `.env.example` and add missing variables to `.env-target` file
+Compare `.env-target` with `.env.example` and add missing variables to `.env-target` file.
 ```
 php ./vendor/bin/env-diff actualize .env.example .env-target
 ```
 
-If you want to delete outdated values just run command with `-k=false` option
+If you want to delete outdated values just run command with `-k=false` option.
 
 ```
 php ./vendor/bin/env-diff actualize -k=false
 ```
 
 ### Show differences
-Command has same interface, arguments and options
+Command has same interface, arguments and options.
 
-Compare `.env` with `.env.dist` and show differences between them
+Compare `.env` with `.env.dist` and show differences between them.
 ```
 php ./vendor/bin/env-diff diff
 ```

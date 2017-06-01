@@ -50,7 +50,7 @@ php ./vendor/bin/env-diff diff
 Add code block in `composer.json`:
 ```$json
 "scripts": {
-    "post-update-cmd": "Lf\\EnvDiff\\Composer\\ScriptHandler::actualizeEnv"
+    "post-update-cmd": "LF\\EnvDiff\\Composer\\ScriptHandler::actualizeEnv"
 }
 ```
 
@@ -108,7 +108,7 @@ JSON array with multiple configurations inside it instead of a configuration obj
 Add code block in `composer.json`:
 ```$json
 "scripts": {
-    "post-update-cmd": "Lf\\EnvDiff\\Composer\\ScriptHandler::showDifference"
+    "post-update-cmd": "LF\\EnvDiff\\Composer\\ScriptHandler::showDifference"
 }
 ```
 

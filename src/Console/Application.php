@@ -13,10 +13,12 @@ class Application extends BaseApplication
      */
     public function __construct()
     {
-        parent::__construct('Env diff', '1.0.1');
+        parent::__construct('Env diff', '1.0.2');
 
         $this->setAutoExit(true);
         $this->add(new DiffCommand('diff'));
         $this->add(new ActualizeCommand('actualize'));
+
+        $this->setDefaultCommand('actualize');
     }
 }

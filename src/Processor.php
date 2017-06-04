@@ -53,12 +53,9 @@ class Processor
         }
 
         ksort($actualEnv);
-        file_put_contents(
-            $target,
-            '# This file is auto-generated during the composer install' . PHP_EOL . Env::dump($actualEnv)
-        );
+        file_put_contents($target, Env::dump($actualEnv));
 
-        $this->io->write(sprintf('<info>%s has been %s</info>', $target, $exists ? 'updated' : 'created'));
+        $this->io->write(sprintf('<info>"%s" has been %s</info>', $target, $exists ? 'updated' : 'created'));
 
         return false;
     }
@@ -94,7 +91,7 @@ class Processor
             return false;
         }
 
-        $this->io->write(sprintf('Diff between %s and %s files:', $target, $dist));
+        $this->io->write(sprintf('Diff between "%s" and "%s" files:', $target, $dist));
         $this->io->write('');
 
         foreach ($missingEnv as $env => $value) {

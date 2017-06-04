@@ -1,4 +1,4 @@
-Diff between .env and .env.dist files:
+Diff between ".env" and ".env.dist" files:
 
 <fg=red>- MISSED=true</>
 <fg=green>+ EXTRA=true</>

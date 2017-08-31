@@ -11,6 +11,8 @@ use RuntimeException;
 
 class ScriptHandler
 {
+    const CONFIG_KEY = 'lf-env-diff';
+
     /**
      * @param Event $event
      *
@@ -54,7 +56,7 @@ class ScriptHandler
     {
         $extras = $event->getComposer()->getPackage()->getExtra();
 
-        $configs = isset($extras['lf-diff-env']) ? $extras['lf-diff-env'] : [[]];
+        $configs = isset($extras[self::CONFIG_KEY]) ? $extras[self::CONFIG_KEY] : [[]];
 
         if (!is_array($configs)) {
             throw new InvalidArgumentException(

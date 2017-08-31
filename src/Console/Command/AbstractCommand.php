@@ -6,6 +6,7 @@ use LF\EnvDiff\Config;
 use LF\EnvDiff\IO\ConsoleIO;
 use LF\EnvDiff\Processor;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Exception\InvalidArgumentException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -25,6 +26,8 @@ abstract class AbstractCommand extends Command
 
     /**
      * {@inheritdoc}
+     *
+     * @throws InvalidArgumentException
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -40,6 +43,8 @@ abstract class AbstractCommand extends Command
      * @param InputInterface $input
      *
      * @return Config
+     *
+     * @throws InvalidArgumentException
      */
     private function createConfig(InputInterface $input)
     {

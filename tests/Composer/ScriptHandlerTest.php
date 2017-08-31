@@ -20,11 +20,11 @@ class ScriptHandlerTest extends TestCase
     {
         return [
             'invalid type'                      => [
-                ['lf-diff-env' => 'not an array'],
+                ['lf-env-diff' => 'not an array'],
                 'The extra.lf-env-diff setting must be an array or a configuration object',
             ],
             'invalid type for multiple configs' => [
-                ['lf-diff-env' => ['not an array']],
+                ['lf-env-diff' => ['not an array']],
                 'The extra.lf-env-diff setting must be an array of configuration objects',
             ],
         ];
@@ -76,7 +76,7 @@ class ScriptHandlerTest extends TestCase
         return [
             [
                 [
-                    'lf-diff-env' => [
+                    'lf-env-diff' => [
                         [
                             'dist'   => 'fixtures/difference/valid/identical/.env.dist',
                             'target' => 'fixtures/difference/valid/identical/.env'

@@ -8,10 +8,12 @@
 
 EnvDiff is tool to compare environment keys to find the difference between .env files and actualize them.
 
+![Example cast](https://j.gifs.com/y8RGA6.gif)
+
 # Installation
 
 ```
-composer install tekill/env-diff
+composer require tekill/env-diff
 ```
 
 ## Manual running
@@ -129,7 +131,7 @@ check_run() {
   echo "$changed_files" | grep -E --quiet "$1" && eval "$2"
 }
 
-# Aclualize env files if the `env.dist` file gets changed
+# Actualize env files if the `env.dist` file gets changed
 check_run env.dist "php ./vendor/bin/env-diff aclualize"
 ```
 

@@ -5,7 +5,7 @@ namespace LF\EnvDiff;
 class Config
 {
     const DEFAULT_TARGET = '.env';
-    CONST DEFAULT_DIST   = '.env.dist';
+    const DEFAULT_DIST   = '.env.dist';
 
     /** @var string */
     private $dist;

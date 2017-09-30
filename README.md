@@ -132,7 +132,7 @@ check_run() {
 }
 
 # Actualize env files if the `env.dist` file gets changed
-check_run env.dist "php ./vendor/bin/env-diff aclualize"
+check_run env.dist "php ./vendor/bin/env-diff actualize"
 ```
 
 [ico-version]: https://img.shields.io/packagist/v/Tekill/env-diff.svg?style=flat-square

@@ -15,6 +15,9 @@ engines:
       ignore-undeclared: true
       dead-code-detection: true
       backward-compatibility-checks: true
+    checks:
+      PhanParamTooMany:
+        enabled: false
   phpmd:
     enabled: true
     checks:

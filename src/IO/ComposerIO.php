@@ -23,7 +23,7 @@ class ComposerIO implements IOInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @param string $message
      */
     public function write($message)
     {
@@ -31,7 +31,7 @@ class ComposerIO implements IOInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @return bool
      */
     public function isInteractive()
     {
@@ -39,7 +39,10 @@ class ComposerIO implements IOInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @param string      $question
+     * @param string|null $default
+     *
+     * @return string
      *
      * @throws \RuntimeException
      */

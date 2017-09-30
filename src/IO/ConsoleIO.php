@@ -2,7 +2,6 @@
 
 namespace LF\EnvDiff\IO;
 
-use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -36,7 +35,7 @@ class ConsoleIO implements IOInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @param string $message
      */
     public function write($message)
     {
@@ -44,7 +43,7 @@ class ConsoleIO implements IOInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @return bool
      */
     public function isInteractive()
     {
@@ -52,9 +51,12 @@ class ConsoleIO implements IOInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @param string      $question
+     * @param string|null $default
      *
-     * @throws RuntimeException
+     * @return string
+     *
+     * @throws \RuntimeException
      */
     public function ask($question, $default = null)
     {

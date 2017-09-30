@@ -15,8 +15,8 @@ interface IOInterface
     public function isInteractive();
 
     /**
-     * @param string $question
-     * @param string $default
+     * @param string      $question
+     * @param string|null $default
      *
      * @return string
      */

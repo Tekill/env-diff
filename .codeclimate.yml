@@ -12,6 +12,9 @@ engines:
     enabled: true
     config:
       file_extensions: "php"
+      ignore-undeclared: true
+      dead-code-detection: true
+      backward-compatibility-checks: true
   phpmd:
     enabled: true
     checks:

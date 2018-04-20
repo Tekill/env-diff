@@ -19,3 +19,7 @@
 
 * Fix config key mismatch
 * Update Readme.md
+
+# 1.1.0 (2018-04-20)
+
+* Add Symfony 4 support (@craigruks)

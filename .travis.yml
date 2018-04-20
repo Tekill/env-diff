@@ -1,21 +1,10 @@
 language: php
 
 dist: trusty
-sudo: required
-
-addons:
-  sonarcloud:
-    organization: tekill-github
-    token:
-      secure: "gmbBKIYBSJ8a9kNZhQn/azr1c+IiwtJtSdwxrO2cB0ew6OOQbuAWzLZ+Q2Hj+0xfh+YoXasrC2jvJTDYzTbNaY3bd4kYZq+za2jrgt8cYK9fxK9bSgcQDH+vyYTjnVuxI2nGddQuRsyhkXnzZ3x7rVS9yPGJSYdrx6UgClsjaheUto/cKpKjYj5UdPotddFl2nyoBw3rNsuFNmDbpLkgnV/lhN4lllELl3t0s/xBX89PLdeLEqpTQx7ffue3muY4OpAJZ7+PJSt+eK+rsX6XtYVTqdgQ0vPRjyNv0qvOEbcaa4iufl3nxJdEjbqdYI3TOkgrKygRhostAb+sXN+foCbbfNISUb/iXBV5GBBpyqqfZYU2wyRgIDey2OA2s7ryJQtdp56qXogwF4LNa7SxF3eA6Sn2xBxzmDNYOysrVBlbldppl8zMVLiLrrZE5lq5fkWmN6sJdKYRpn816+66c684z0nKLemVuuvvBs4o67+BzNppuTi1UlKxIr9msMjDRSi/nztJ4ABohg/w11dVLIk6errySnK2NedMJ2xuU7KjWFdYiaTO2LqQvQwYvtSIhxxo4Tb4VGSkDiO+mY5YRT9yx6maMtNphm636qvYiionna+6hA6/sIN+GWxsoXO/0HKK4hDr6bZdjCqpsdWPdyryk9L9Eim4WzWR/xiXGgs="
-
-jdk:
-  - oraclejdk8
 
 cache:
   directories:
     - $HOME/.composer/cache/files
-    - $HOME/.sonar/cache
 
 php:
   - 5.6
@@ -28,4 +17,3 @@ before_script:
 
 script:
   - vendor/bin/phpunit --coverage-clover=phpunit.coverage.xml --log-junit=phpunit.report.xml
-  - sonar-scanner

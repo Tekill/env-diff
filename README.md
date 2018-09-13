@@ -33,10 +33,10 @@ Compare `.env-target` with `.env.example` and add missing variables to `.env-tar
 php ./vendor/bin/env-diff actualize .env.example .env-target
 ```
 
-If you want to delete outdated values just run command with `-k=false` option.
+If you want to remove outdated values just run command with `-r` option.
 
 ```
-php ./vendor/bin/env-diff actualize -k=false
+php ./vendor/bin/env-diff actualize -r
 ```
 
 ### Show differences

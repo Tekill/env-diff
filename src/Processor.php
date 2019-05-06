@@ -52,7 +52,6 @@ class Processor
             mkdir($dir, 0755, true);
         }
 
-        ksort($actualEnv);
         file_put_contents($target, Env::dump($actualEnv));
 
         $this->io->write(sprintf('<info>"%s" has been %s</info>', $target, $exists ? 'updated' : 'created'));

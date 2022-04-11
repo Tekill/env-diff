@@ -21,7 +21,7 @@ abstract class AbstractCommand extends Command
         $this
             ->addArgument('dist', InputOption::VALUE_REQUIRED, 'From file', Config::DEFAULT_DIST)
             ->addArgument('target', InputOption::VALUE_REQUIRED, 'To file', Config::DEFAULT_TARGET)
-            ->addOption('keep-outdated', 'k', InputOption::VALUE_OPTIONAL, 'Keep old env variables', true);
+            ->addOption('remove-outdated', 'r', InputOption::VALUE_NONE, 'Remove old env variables');
     }
 
     /**
@@ -48,11 +48,11 @@ abstract class AbstractCommand extends Command
      */
     private function createConfig(InputInterface $input)
     {
-        $dist         = $input->getArgument('dist');
-        $target       = $input->getArgument('target');
-        $keepOutdated = $input->getOption('keep-outdated');
+        $dist           = $input->getArgument('dist');
+        $target         = $input->getArgument('target');
+        $removeOutdated = $input->getOption('remove-outdated');
 
-        return new Config($dist, $target, $keepOutdated);
+        return new Config($dist, $target, !$removeOutdated);
     }
 
     /**
